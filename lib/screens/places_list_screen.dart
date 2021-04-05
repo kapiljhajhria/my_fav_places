@@ -18,33 +18,46 @@ class PlacesListScreen extends StatelessWidget {
               }),
         ],
       ),
-      body: Consumer<GreatPlaces>(
-        builder: (ctx, greatPlaces, _child) {
-          if (greatPlaces.places.isEmpty) {
-            return _child!;
+      body: FutureBuilder(
+        future: Provider.of<GreatPlaces>(context, listen: false)
+            .fetchAndSetPlaces(),
+        initialData: null,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
-          return ListView.builder(
-            itemCount: greatPlaces.places.length,
-            itemBuilder: (BuildContext context, int index) {
-              final Place place = greatPlaces.places[index];
-              return ListTile(
-                onTap: () {
-                  //go to details page
+
+          return Consumer<GreatPlaces>(
+            builder: (ctx, greatPlaces, _child) {
+              if (greatPlaces.places.isEmpty) {
+                return _child!;
+              }
+              return ListView.builder(
+                itemCount: greatPlaces.places.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final Place place = greatPlaces.places[index];
+                  return ListTile(
+                    onTap: () {
+                      //go to details page
+                    },
+                    title: Text(place.title),
+                    subtitle: place.location == null
+                        ? const Text('No Location Data')
+                        : const Text("will show location data"),
+                    leading: CircleAvatar(
+                      backgroundImage: FileImage(place.image),
+                    ),
+                  );
                 },
-                title: Text(place.title),
-                subtitle: place.location == null
-                    ? const Text('No Location Data')
-                    : const Text("will show location data"),
-                leading: CircleAvatar(
-                  backgroundImage: FileImage(place.image),
-                ),
               );
             },
+            child: const Center(
+              child: Text("No Places addet yet, Get started now"),
+            ),
           );
         },
-        child: const Center(
-          child: Text("No Places addet yet, Get started now"),
-        ),
       ),
     );
   }

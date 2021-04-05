@@ -15,7 +15,7 @@ class AddPlaceScreen extends StatefulWidget {
 
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
   late TextEditingController _titleTxtController;
-  String? _titleErrorText = null;
+  String? _titleErrorText;
   // final Map<String, dynamic> _placeDetails = {};
   File? _pickedImage;
 
