@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:my_fav_places/providers/great_places.dart';
 import 'package:my_fav_places/widgets/image_input.dart';
+import 'package:provider/provider.dart';
 
 class AddPlaceScreen extends StatefulWidget {
   static String routeName = "/addPlace";
@@ -12,6 +16,22 @@ class AddPlaceScreen extends StatefulWidget {
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
   late TextEditingController _titleTxtController;
   // final Map<String, dynamic> _placeDetails = {};
+  File? _pickedImage;
+
+  // ignore: use_setters_to_change_properties
+  void _selectImage(File? pickedImage) {
+    _pickedImage = pickedImage;
+  }
+
+  bool _savePlace() {
+    if (_titleTxtController.text.isEmpty || _pickedImage == null) {
+      return false;
+    }
+    // ignore: unnecessary_statements
+    Provider.of<GreatPlaces>(context, listen: false).addPlace(
+        _titleTxtController.text, _pickedImage!); //doing null check above
+    return true;
+  }
 
   @override
   void initState() {
@@ -19,7 +39,6 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
     super.initState();
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -41,7 +60,9 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  ImageInput(),
+                  ImageInput(
+                    onSelectImage: _selectImage,
+                  ),
                   TextButton(
                       onPressed: () {},
                       child: const Text(
@@ -63,7 +84,12 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                     (states) => Theme.of(context).accentColor),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap),
             icon: const Icon(Icons.place),
-            onPressed: () {},
+            onPressed: () {
+              _savePlace();
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text("Place added")));
+              Navigator.pop(context);
+            },
             label: const Text("Add Place"),
           )
         ],

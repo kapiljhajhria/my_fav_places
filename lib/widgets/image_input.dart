@@ -7,6 +7,10 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
 
 class ImageInput extends StatefulWidget {
+  final Function onSelectImage;
+
+  const ImageInput({Key? key, required this.onSelectImage}) : super(key: key);
+
   @override
   _ImageInputState createState() => _ImageInputState();
 }
@@ -33,12 +37,13 @@ class _ImageInputState extends State<ImageInput> {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("No Image Selected")));
     }
-    File imageFIle = File.fromUri(Uri(path: pickedFile!.path));
+    final File imageFIle = File.fromUri(Uri(path: pickedFile!.path));
     _storedImage = imageFIle;
     setState(() {});
     final appDir = await syspaths.getApplicationDocumentsDirectory();
     final String fileName = path.basename(imageFIle.path);
-    File saveImage = await imageFIle.copy('${appDir.path}/$fileName');
+    final File saveImage = await imageFIle.copy('${appDir.path}/$fileName');
+    widget.onSelectImage(saveImage);
   }
 
   @override
