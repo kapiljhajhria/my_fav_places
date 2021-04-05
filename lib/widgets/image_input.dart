@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 // import "package:images_picker/images_picker.dart";
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart' as syspaths;
 
 class ImageInput extends StatefulWidget {
   @override
@@ -12,19 +14,31 @@ class ImageInput extends StatefulWidget {
 class _ImageInputState extends State<ImageInput> {
   File? _storedImage;
 
-  void _takePicture() async {
+  Future<void> _takePicture() async {
     final _picker = ImagePicker();
-
-    final PickedFile? pickedFile =
-        await _picker.getImage(source: ImageSource.camera);
+    late final PickedFile? pickedFile;
+    try {
+      pickedFile = await _picker.getImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+        maxWidth: 600,
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Failed to pick Image")));
+    }
     // List<Media>? res = await ImagesPicker.openCamera();
     // _storedImage = File.fromUri(Uri.parse(res![0].path!));
     if (pickedFile == null) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Failed to pick Image")));
+          .showSnackBar(const SnackBar(content: Text("No Image Selected")));
     }
-    _storedImage = File.fromUri(Uri(path: pickedFile!.path));
+    File imageFIle = File.fromUri(Uri(path: pickedFile!.path));
+    _storedImage = imageFIle;
     setState(() {});
+    final appDir = await syspaths.getApplicationDocumentsDirectory();
+    final String fileName = path.basename(imageFIle.path);
+    File saveImage = await imageFIle.copy('${appDir.path}/$fileName');
   }
 
   @override
