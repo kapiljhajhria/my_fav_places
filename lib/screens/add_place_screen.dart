@@ -15,6 +15,7 @@ class AddPlaceScreen extends StatefulWidget {
 
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
   late TextEditingController _titleTxtController;
+  String? _titleErrorText = null;
   // final Map<String, dynamic> _placeDetails = {};
   File? _pickedImage;
 
@@ -25,11 +26,20 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
 
   bool _savePlace() {
     if (_titleTxtController.text.isEmpty || _pickedImage == null) {
+      if (_titleTxtController.text.isEmpty) {
+        setState(() {
+          _titleErrorText = "Required Field";
+        });
+      }
       return false;
     }
+    _titleErrorText = null;
     // ignore: unnecessary_statements
     Provider.of<GreatPlaces>(context, listen: false).addPlace(
         _titleTxtController.text, _pickedImage!); //doing null check above
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text("Place added")));
+    Navigator.pop(context);
     return true;
   }
 
@@ -55,7 +65,8 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
               child: Column(
                 children: [
                   TextField(
-                    decoration: const InputDecoration(labelText: "Place Name"),
+                    decoration: InputDecoration(
+                        labelText: "Place Name", errorText: _titleErrorText),
                     controller: _titleTxtController,
                   ),
                   const SizedBox(
@@ -85,12 +96,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                     (states) => Theme.of(context).accentColor),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap),
             icon: const Icon(Icons.place),
-            onPressed: () {
-              _savePlace();
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text("Place added")));
-              Navigator.pop(context);
-            },
+            onPressed: _savePlace,
             label: const Text("Add Place"),
           )
         ],
