@@ -38,7 +38,7 @@ class _ImageInputState extends State<ImageInput> {
           .showSnackBar(const SnackBar(content: Text("No Image Selected")));
       return;
     }
-    final File imageFIle = File.fromUri(Uri(path: pickedFile!.path));
+    final File imageFIle = File.fromUri(Uri(path: pickedFile.path));
     _storedImage = imageFIle;
     setState(() {});
     final appDir = await syspaths.getApplicationDocumentsDirectory();
