@@ -36,6 +36,7 @@ class _ImageInputState extends State<ImageInput> {
     if (pickedFile == null) {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("No Image Selected")));
+      return;
     }
     final File imageFIle = File.fromUri(Uri(path: pickedFile!.path));
     _storedImage = imageFIle;
