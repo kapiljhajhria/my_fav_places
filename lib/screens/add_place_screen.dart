@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_fav_places/providers/great_places.dart';
 import 'package:my_fav_places/widgets/image_input.dart';
+import 'package:my_fav_places/widgets/location_input.dart';
 import 'package:provider/provider.dart';
 
 class AddPlaceScreen extends StatefulWidget {
@@ -59,32 +60,31 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-              child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  TextField(
-                    decoration: InputDecoration(
-                        labelText: "Place Name", errorText: _titleErrorText),
-                    controller: _titleTxtController,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ImageInput(
-                    onSelectImage: _selectImage,
-                  ),
-                  TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        "Pick Image",
-                        style: TextStyle(color: Colors.black),
-                      ))
-                ],
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(
+                          labelText: "Place Name", errorText: _titleErrorText),
+                      controller: _titleTxtController,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    ImageInput(
+                      onSelectImage: _selectImage,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    LocationInput(),
+                  ],
+                ),
               ),
             ),
-          )),
+          ),
           ElevatedButton.icon(
             style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -98,7 +98,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
             icon: const Icon(Icons.place),
             onPressed: _savePlace,
             label: const Text("Add Place"),
-          )
+          ),
         ],
       ),
     );
