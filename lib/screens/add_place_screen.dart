@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:my_fav_places/models/place.dart';
 import 'package:my_fav_places/providers/great_places.dart';
 import 'package:my_fav_places/widgets/image_input.dart';
 import 'package:my_fav_places/widgets/location_input.dart';
@@ -19,6 +20,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
   String? _titleErrorText;
   // final Map<String, dynamic> _placeDetails = {};
   File? _pickedImage;
+  PlaceLocation? _pickedLoaction;
 
   // ignore: use_setters_to_change_properties
   void _selectImage(File? pickedImage) {
@@ -26,7 +28,9 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
   }
 
   bool _savePlace() {
-    if (_titleTxtController.text.isEmpty || _pickedImage == null) {
+    if (_titleTxtController.text.isEmpty ||
+        _pickedImage == null ||
+        _pickedLoaction == null) {
       if (_titleTxtController.text.isEmpty) {
         setState(() {
           _titleErrorText = "Required Field";
@@ -37,11 +41,18 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
     _titleErrorText = null;
     // ignore: unnecessary_statements
     Provider.of<GreatPlaces>(context, listen: false).addPlace(
-        _titleTxtController.text, _pickedImage!); //doing null check above
+        _titleTxtController.text,
+        _pickedImage!,
+        _pickedLoaction!); //doing null check above
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(content: Text("Place added")));
     Navigator.pop(context);
     return true;
+  }
+
+  void _selectPlace(double lat, double long) {
+    //..
+    _pickedLoaction = PlaceLocation(lat: lat, long: long);
   }
 
   @override
@@ -79,7 +90,9 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    LocationInput(),
+                    LocationInput(
+                      onSelectPlace: _selectPlace,
+                    ),
                   ],
                 ),
               ),

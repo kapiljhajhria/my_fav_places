@@ -43,9 +43,7 @@ class PlacesListScreen extends StatelessWidget {
                       //go to details page
                     },
                     title: Text(place.title),
-                    subtitle: place.location == null
-                        ? const Text('No Location Data')
-                        : const Text("will show location data"),
+                    subtitle: Text(place.location!.address.toString()),
                     leading: CircleAvatar(
                       backgroundImage: FileImage(place.image),
                     ),
