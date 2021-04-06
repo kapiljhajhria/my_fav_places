@@ -15,14 +15,10 @@ class MapsScreen extends StatefulWidget {
 
 class _MapsScreenState extends State<MapsScreen> {
   LatLng? _pickedLoaction;
-  late Set<Marker> _marker;
 
   void _selectLocation(LatLng loc) {
     setState(() {
       _pickedLoaction = loc;
-      // _marker = <Marker>{
-      //   Marker(markerId: const MarkerId("m1"), position: loc),
-      // };
     });
   }
 
