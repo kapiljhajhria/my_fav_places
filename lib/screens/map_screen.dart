@@ -20,9 +20,9 @@ class _MapsScreenState extends State<MapsScreen> {
   void _selectLocation(LatLng loc) {
     setState(() {
       _pickedLoaction = loc;
-      _marker = <Marker>{
-        Marker(markerId: const MarkerId("m1"), position: loc),
-      };
+      // _marker = <Marker>{
+      //   Marker(markerId: const MarkerId("m1"), position: loc),
+      // };
     });
   }
 
@@ -37,7 +37,9 @@ class _MapsScreenState extends State<MapsScreen> {
                 onPressed: _pickedLoaction == null
                     ? null
                     : () {
-                        Navigator.of(context).pop(_pickedLoaction);
+                        Navigator.of(context).pop(_pickedLoaction ??
+                            LatLng(widget.initialLocation.lat,
+                                widget.initialLocation.long));
                       })
         ],
         title: const Text("Your Map"),
@@ -45,7 +47,15 @@ class _MapsScreenState extends State<MapsScreen> {
       body: GoogleMap(
         myLocationEnabled: true,
         onTap: widget.isSelecting ? _selectLocation : null,
-        markers: _pickedLoaction == null ? {} : _marker,
+        markers: (_pickedLoaction == null && widget.isSelecting)
+            ? {}
+            : {
+                Marker(
+                    markerId: const MarkerId('m1'),
+                    position: _pickedLoaction ??
+                        LatLng(widget.initialLocation.lat,
+                            widget.initialLocation.long))
+              },
         // mapToolbarEnabled: true,
         initialCameraPosition: CameraPosition(
           zoom: 16,
